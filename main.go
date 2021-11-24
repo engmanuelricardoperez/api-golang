@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -57,10 +58,61 @@ func getAlbumByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 }
 
+//deleteAlbumsByID, deletes album especified by path, including id number
+func deleteAlbumsByID(c *gin.Context) {
+	id := c.Param("id")
+	position := 0
+	for _, a := range albums {
+
+		if a.ID == id {
+			fmt.Println("entry in Id condition: ID detected=", position)
+			albums = append(albums[:position], albums[position+1:]...)
+
+			position = 0
+			return
+		}
+		position++
+		fmt.Println("all counts of position", position)
+	}
+
+}
+
+//deleteAlbums , delete all albums in slice albums
+func deleteAlbums(c *gin.Context) {
+	albums = albums[:0]
+}
+
 func main() {
+	// a := []string{"A", "B", "C", "D", "E", "F"}
+	// var position, i int = 0, 2
+	// fmt.Println("slice albums:", albums)
+	// fmt.Println(len(albums))
+	// fmt.Println("slice a:", a)
+	// fmt.Println(len(a))
+
+	// //a = append(a[position:], a[position+1:]...)
+	// a[i] = a[len(a)-1] // Copy last element to index i.
+	// a[len(a)-1] = ""   // Erase last element (write zero value).
+	// a = a[:len(a)-1]   // Truncate slice.
+
+	// //albums[position] = albums[len(albums)-1]
+
+	// albums = append(albums[:position], albums[position+1:]...)
+
+	// // albums[i] = albums[len(albums)-1] // Copy last element to index i.
+	// // albums[len(albums)-1] = :0 // Erase last element (write zero value).
+	// // albums = albums[:len(albums)-1]   // Truncate slice.
+
+	// fmt.Println("slice albums:", albums)
+	// fmt.Println(len(albums))
+	// fmt.Println("slice a:", a)
+	// fmt.Println(len(a))
+
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
 	router.POST("/albums", postAlbums)
 	router.GET("/albums/:id", getAlbumByID)
+	router.DELETE("/albums", deleteAlbums)
+	router.DELETE("/albums/:id", deleteAlbumsByID)
 	router.Run("localhost:8080")
 }

@@ -63,10 +63,8 @@ func deleteAlbumsByID(c *gin.Context) {
 	id := c.Param("id")
 	position := 0
 	for _, a := range albums {
-
 		if a.ID == id {
 			albums = append(albums[:position], albums[position+1:]...)
-
 			position = 0
 			return
 		}
@@ -78,6 +76,9 @@ func deleteAlbumsByID(c *gin.Context) {
 func sumAB(a int, b int) int {
 	return a + b
 }
+func diffAB(a int, b int) int {
+	return a - b
+}
 
 //deleteAlbums , delete all albums in slice albums
 func deleteAlbums(c *gin.Context) {
@@ -87,6 +88,7 @@ func deleteAlbums(c *gin.Context) {
 func main() {
 
 	fmt.Println(sumAB(3, 4))
+	fmt.Println(diffAB(3, 4))
 
 	router := gin.Default()
 	router.GET("/albums", getAlbums)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -74,6 +75,10 @@ func deleteAlbumsByID(c *gin.Context) {
 
 }
 
+func sumAB(a int, b int) int {
+	return a + b
+}
+
 //deleteAlbums , delete all albums in slice albums
 func deleteAlbums(c *gin.Context) {
 	albums = albums[:0]
@@ -81,7 +86,7 @@ func deleteAlbums(c *gin.Context) {
 
 func main() {
 
-	// fmt.Println(len(a))
+	fmt.Println(sumAB(3, 4))
 
 	router := gin.Default()
 	router.GET("/albums", getAlbums)

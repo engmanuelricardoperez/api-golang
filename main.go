@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -58,43 +59,38 @@ func getAlbumByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 }
 
-//deleteAlbumsByID, deletes album especified by path, including id number
-func deleteAlbumsByID(c *gin.Context) {
-	id := c.Param("id")
-	position := 0
-	for _, a := range albums {
-		if a.ID == id {
-			albums = append(albums[:position], albums[position+1:]...)
-			position = 0
-			return
-		}
-		position++
-	}
-
-}
-
-func sumAB(a int, b int) int {
-	return a + b
-}
-func diffAB(a int, b int) int {
-	return a - b
-}
-
-//deleteAlbums , delete all albums in slice albums
-func deleteAlbums(c *gin.Context) {
+// DeleteAlbums deletes the list of all albums as JSON.
+func DeleteAlbums(c *gin.Context) {
 	albums = albums[:0]
 }
 
-func main() {
+// deleteAlbumByID locates the album whose ID value matches the id
+// parameter sent by the client, then deletes that album as a response.
+func deleteAlbumByID(c *gin.Context) {
+	id := c.Param("id")
 
-	fmt.Println(sumAB(3, 4))
-	fmt.Println(diffAB(3, 4))
+	fmt.Println(id)
+	// Loop over the list of albums, looking for
+	// an album whose ID value matches the parameter.
+	for _, a := range albums {
+		if a.ID == id {
+			b, _ := strconv.Atoi(id) // Storage ID numeric value
+			if len(albums) != 1 {
+				albums = append(albums[:b-1], albums[b:]...)
+			} else {
+				albums = albums[:0]
+			}
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
 
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
 	router.POST("/albums", postAlbums)
 	router.GET("/albums/:id", getAlbumByID)
-	router.DELETE("/albums", deleteAlbums)
-	router.DELETE("/albums/:id", deleteAlbumsByID)
+	router.DELETE("/albums", DeleteAlbums)
+	router.DELETE("/albums/:id", deleteAlbumByID)
 	router.Run("localhost:8080")
 }
